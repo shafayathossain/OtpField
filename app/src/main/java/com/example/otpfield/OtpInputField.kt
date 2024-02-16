@@ -112,6 +112,12 @@ private fun handleOtpInputChange(
     if (newValue.length <= 1) {
         // Directly set the new value if it's a single character.
         otpFieldsValues[index].value = otpFieldsValues[index].value.copy(text = newValue)
+    } else if (newValue.length == 2) {
+        // If length of new value is 2, we can guess the user is typing focusing on current box
+        // In this case set the unmatched character only
+        val oldValue = otpFieldsValues[index].value.text
+        val mNewValue = newValue.replaceFirst(oldValue, "")
+        otpFieldsValues[index].value = otpFieldsValues[index].value.copy(text = mNewValue.lastOrNull()?.toString() ?: "")
     } else if (newValue.isNotEmpty()) {
         // If pasting multiple characters, distribute them across the boxes starting from the current index.
         newValue.forEachIndexed { i, char ->
