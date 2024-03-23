@@ -1,17 +1,16 @@
 package com.example.otpfield
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -22,10 +21,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -79,6 +80,7 @@ fun OtpInputField(
         repeat(count) { index ->
             // For each OTP box, manage its value, focus, and what happens on value change.
             OtpBox(
+                modifier = Modifier.testTag("otpBox$index"),
                 otpValue = otpFieldsValues[index].value,
                 isLastItem = index == count - 1, // Check if this box is the last in the sequence.
                 totalBoxCount = count,
@@ -117,7 +119,8 @@ private fun handleOtpInputChange(
         // In this case set the unmatched character only
         val oldValue = otpFieldsValues[index].value.text
         val mNewValue = newValue.replaceFirst(oldValue, "")
-        otpFieldsValues[index].value = otpFieldsValues[index].value.copy(text = mNewValue.lastOrNull()?.toString() ?: "")
+        otpFieldsValues[index].value =
+            otpFieldsValues[index].value.copy(text = mNewValue.lastOrNull()?.toString() ?: "")
     } else if (newValue.isNotEmpty()) {
         // If pasting multiple characters, distribute them across the boxes starting from the current index.
         newValue.forEachIndexed { i, char ->
@@ -171,9 +174,10 @@ private fun focusNextBox(
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun OtpBox(
+    modifier: Modifier,
     otpValue: OtpField, // Current value of this OTP box.
     isLastItem: Boolean, // Whether this box is the last in the sequence.
     totalBoxCount: Int, // Total number of OTP boxes for layout calculations.
@@ -192,12 +196,6 @@ private fun OtpBox(
 
     Box(
         modifier = Modifier
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.primaryContainer,
-                RoundedCornerShape(8.dp)
-            )
-            .background(MaterialTheme.colorScheme.primaryContainer)
             .size(totalBoxSize),
         contentAlignment = Alignment.Center
     ) {
@@ -210,7 +208,8 @@ private fun OtpBox(
                 }
             },
             // Setup for focus and keyboard behavior.
-            modifier = Modifier.focusRequester(focusRequest)
+            modifier = modifier
+                .focusRequester(focusRequest)
                 .onGloballyPositioned {
                     onFocusSet(focusRequest)
                 },
@@ -230,6 +229,16 @@ private fun OtpBox(
                     keyboardController?.hide()
                     focusManager.clearFocus()
                 }
+            ),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+
+                cursorColor = MaterialTheme.colorScheme.primary,
+                errorCursorColor = MaterialTheme.colorScheme.error,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
             )
         )
     }
