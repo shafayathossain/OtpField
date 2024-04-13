@@ -138,7 +138,7 @@ val screenWidth = LocalWindowInfo.current.containerSize.width
 
 #### Known Issue on iOS
 
-There is a recognized issue with the `BasicTextField` on iOS, where the cursor in an empty `BasicTextField` aligns only to the left side (start) when `TextAlign` is set to right (end). This issue can affect the user experience on iOS, particularly in scenarios where text alignment is crucial. The problem is documented in the JetBrains Compose Multiplatform repository:
+There is a recognized issue with the `BasicTextField` on iOS, where the cursor in an empty `BasicTextField` aligns only to the left side (start). This issue can affect the user experience on iOS, particularly in scenarios where text alignment is crucial. The problem is documented in the JetBrains Compose Multiplatform repository:
 
 - **Similar Issue Link**: [GitHub Issue #4611](https://github.com/JetBrains/compose-multiplatform/issues/4611)
 
