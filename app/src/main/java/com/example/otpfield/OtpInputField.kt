@@ -352,7 +352,7 @@ fun OtpView_Preivew() {
             mutableStateOf("124")
         }
         Column(
-            modifier = Modifier.padding(20.pxToDp()),
+            modifier = Modifier.padding(40.pxToDp()),
             verticalArrangement = Arrangement.spacedBy(20.pxToDp())
         ) {
             OtpInputField(
@@ -366,12 +366,11 @@ fun OtpView_Preivew() {
 
             OtpInputField(
                 otp = otpValue,
-                count = 5,
+                count = 4,
                 otpTextType = KeyboardType.NumberPassword,
                 otpBoxModifier = Modifier
-                    .border(1.pxToDp(), Color.Gray)
+                    .border(3.pxToDp(), Color.Gray)
                     .background(Color.White)
-                    .padding(4.pxToDp())  // Padding inside OTP boxes should be handled carefully
             )
 
             OtpInputField(
@@ -379,14 +378,14 @@ fun OtpView_Preivew() {
                 count = 5,
                 textColor = MaterialTheme.colorScheme.onBackground,
                 otpBoxModifier = Modifier
-                    .border(2.pxToDp(), Color(0xFF277F51), shape = RoundedCornerShape(4.pxToDp()))
+                    .border(7.pxToDp(), Color(0xFF277F51), shape = RoundedCornerShape(12.pxToDp()))
             )
 
             OtpInputField(
                 otp = otpValue,
                 count = 5,
                 otpBoxModifier = Modifier
-                    .bottomStroke(color = Color.DarkGray, strokeWidth = 2.pxToDp())
+                    .bottomStroke(color = Color.DarkGray, strokeWidth = 6.pxToDp())
             )
         }
     }
