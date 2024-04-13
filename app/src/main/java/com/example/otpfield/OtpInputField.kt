@@ -1,6 +1,5 @@
 package com.example.otpfield
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +27,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -98,7 +99,7 @@ fun OtpInputField(
     otp: MutableState<String>, // The current OTP value.
     count: Int = 5, // Number of OTP boxes.
     otpBoxModifier: Modifier = Modifier
-        .border(1.dp, Color.Gray)
+        .border(1.pxToDp(), Color.Gray)
         .background(Color.White),
     otpTextType: KeyboardType = KeyboardType.Number,
     textColor: Color = Color.Black,
@@ -272,13 +273,16 @@ private fun OtpBox(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // Calculate the size of the box based on screen width and total count.
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val paddingValue = 5.dp
+    // If you're using this in Kotlin multiplatform mobile
+    // val screenWidth = LocalWindowInfo.current.containerSize.width
+    // If you're using this in Android
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp.dpToPx().toInt()
+    val paddingValue = 5
     val totalBoxSize = (screenWidth / totalBoxCount) - paddingValue * totalBoxCount
 
     Box(
         modifier = modifier
-            .size(totalBoxSize),
+            .size(totalBoxSize.pxToDp()),
         contentAlignment = Alignment.Center,
     ) {
         BasicTextField(
@@ -333,8 +337,14 @@ private fun OtpBox(
 private fun getVisualTransformation(textType: KeyboardType) =
     if (textType == KeyboardType.NumberPassword || textType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None
 
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+
+@Composable
+fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+@Preview
 @Composable
 fun OtpView_Preivew() {
     MaterialTheme {
@@ -342,14 +352,14 @@ fun OtpView_Preivew() {
             mutableStateOf("124")
         }
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            modifier = Modifier.padding(20.pxToDp()),
+            verticalArrangement = Arrangement.spacedBy(20.pxToDp())
         ) {
             OtpInputField(
                 otp = otpValue,
                 count = 4,
                 otpBoxModifier = Modifier
-                    .border(1.dp, Color.Black)
+                    .border(1.pxToDp(), Color.Black)
                     .background(Color.White),
                 otpTextType = KeyboardType.Number
             )
@@ -359,9 +369,9 @@ fun OtpView_Preivew() {
                 count = 5,
                 otpTextType = KeyboardType.NumberPassword,
                 otpBoxModifier = Modifier
-                    .border(1.dp, Color.Gray)
+                    .border(1.pxToDp(), Color.Gray)
                     .background(Color.White)
-                    .padding(4.dp)  // Padding inside OTP boxes should be handled carefully
+                    .padding(4.pxToDp())  // Padding inside OTP boxes should be handled carefully
             )
 
             OtpInputField(
@@ -369,15 +379,14 @@ fun OtpView_Preivew() {
                 count = 5,
                 textColor = MaterialTheme.colorScheme.onBackground,
                 otpBoxModifier = Modifier
-                    .size(50.dp)
-                    .border(2.dp, Color(0xFF277F51), shape = RoundedCornerShape(4.dp))
+                    .border(2.pxToDp(), Color(0xFF277F51), shape = RoundedCornerShape(4.pxToDp()))
             )
 
             OtpInputField(
                 otp = otpValue,
                 count = 5,
                 otpBoxModifier = Modifier
-                    .bottomStroke(color = Color.DarkGray, strokeWidth = 2.dp)
+                    .bottomStroke(color = Color.DarkGray, strokeWidth = 2.pxToDp())
             )
         }
     }
