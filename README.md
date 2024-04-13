@@ -31,7 +31,7 @@ fun ExampleOtpScreen() {
 
     OtpInputField(
         otp = otpValue,
-        count = 5,
+        count = 4,
         otpBoxModifier = Modifier.border(1.dp, Color.Black).background(Color.White),
         otpTextType = KeyboardType.Number
     )
@@ -46,7 +46,7 @@ Enable character masking for enhanced security, suitable for PINs or passwords:
 
 ```kotlin
 OtpInputField(
-    otp = remember { mutableStateOf("") },
+    otp = otpValue,
     count = 5,
     otpTextType = KeyboardType.NumberPassword,
     otpBoxModifier = Modifier
@@ -65,7 +65,7 @@ For a boxy design where each OTP character box appears as a distinct element:
 
 ```kotlin
 OtpInputField(
-    otp = remember { mutableStateOf("") },
+    otp = otpValue,
     count = 5,
     textColor = Color.White,
     otpBoxModifier = Modifier
@@ -81,7 +81,7 @@ For a minimalist design featuring only an underline for each OTP box:
 
 ```kotlin
 OtpInputField(
-    otp = remember { mutableStateOf("") },
+    otp = otpValue,
     count = 5,
     otpBoxModifier = Modifier
         .bottomStroke(color = Color.DarkGray, strokeWidth = 2.dp)
