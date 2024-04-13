@@ -34,6 +34,7 @@ class OtpInputFieldInstrumentedTest {
         composeTestRule.waitForIdle()
         // Simulate typing '12345' across the OTP fields
         val inputs = listOf("1", "2", "3", "4", "5")
+
         inputs.forEachIndexed { index, input ->
             composeTestRule.onNodeWithTag("otpBox$index", useUnmergedTree = true)
                 .performTextInput(input)

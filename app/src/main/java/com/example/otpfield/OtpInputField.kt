@@ -48,7 +48,11 @@ import kotlinx.coroutines.launch
  * @property text The text content of the OTP field.
  * @property focusRequester A FocusRequester to manage focus on the field.
  */
-private data class OtpField(val text: String, val focusRequester: FocusRequester? = null)
+private data class OtpField(
+    val text: String,
+    val index: Int,
+    val focusRequester: FocusRequester? = null
+)
 
 /**
  * A Composable function that creates a row of OTP input fields based on the specified count.
@@ -104,8 +108,14 @@ fun OtpInputField(
 
     // Initialize state for each OTP box with its character and optional focus requester.
     val otpFieldsValues = remember {
-        (0 until count).map {
-            mutableStateOf(OtpField(otp.value.getOrNull(it)?.toString() ?: "", FocusRequester()))
+        (0 until count).mapIndexed { index, i ->
+            mutableStateOf(
+                OtpField(
+                    text = otp.value.getOrNull(i)?.toString() ?: "",
+                    index = index,
+                    focusRequester = FocusRequester()
+                )
+            )
         }
     }
 
@@ -133,7 +143,7 @@ fun OtpInputField(
         repeat(count) { index ->
             // For each OTP box, manage its value, focus, and what happens on value change.
             OtpBox(
-                modifier = otpBoxModifier.testTag("otpBox$index"),
+                modifier = otpBoxModifier,
                 otpValue = otpFieldsValues[index].value,
                 textType = otpTextType,
                 textColor = textColor,
@@ -281,6 +291,7 @@ private fun OtpBox(
             },
             // Setup for focus and keyboard behavior.
             modifier = Modifier
+                .testTag("otpBox${otpValue.index}")
                 .focusRequester(focusRequest)
                 .onGloballyPositioned {
                     onFocusSet(focusRequest)
