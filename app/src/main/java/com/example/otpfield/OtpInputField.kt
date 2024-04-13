@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 /**
  * Data class representing an individual OTP field.
@@ -49,6 +51,9 @@ fun OtpInputField(
     otp: MutableState<String>, // The current OTP value.
     count: Int = 5 // Number of OTP boxes.
 ) {
+
+    val scope = rememberCoroutineScope()
+
     // Initialize state for each OTP box with its character and optional focus requester.
     val otpFieldsValues = remember {
         (0 until count).map {
@@ -86,7 +91,9 @@ fun OtpInputField(
                 totalBoxCount = count,
                 onValueChange = { newValue ->
                     // Handling logic for input changes, including moving focus and updating OTP state.
-                    handleOtpInputChange(index, count, newValue, otpFieldsValues, otp)
+                    scope.launch {
+                        handleOtpInputChange(index, count, newValue, otpFieldsValues, otp)
+                    }
                 },
                 onFocusSet = { focusRequester ->
                     // Save the focus requester for each box to manage focus programmatically.
@@ -117,10 +124,8 @@ private fun handleOtpInputChange(
     } else if (newValue.length == 2) {
         // If length of new value is 2, we can guess the user is typing focusing on current box
         // In this case set the unmatched character only
-        val oldValue = otpFieldsValues[index].value.text
-        val mNewValue = newValue.replaceFirst(oldValue, "")
         otpFieldsValues[index].value =
-            otpFieldsValues[index].value.copy(text = mNewValue.lastOrNull()?.toString() ?: "")
+            otpFieldsValues[index].value.copy(text = newValue.lastOrNull()?.toString() ?: "")
     } else if (newValue.isNotEmpty()) {
         // If pasting multiple characters, distribute them across the boxes starting from the current index.
         newValue.forEachIndexed { i, char ->

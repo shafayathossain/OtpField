@@ -51,7 +51,7 @@ android {
 
 dependencies {
 
-    val composeVersion = "2023.08.00"
+    val composeVersion = "2024.04.00"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

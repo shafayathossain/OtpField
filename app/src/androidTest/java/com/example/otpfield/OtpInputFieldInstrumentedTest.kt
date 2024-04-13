@@ -2,6 +2,7 @@ package com.example.otpfield
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -129,6 +130,9 @@ class OtpInputFieldInstrumentedTest {
 
         // Simulate backspace in the second box, assuming it will clear the input and potentially move focus back to the first box
         composeTestRule.onNodeWithTag(secondBoxTag, useUnmergedTree = true).performTextClearance()
+
+        // Verify if focus moved to first box after clearing text from second box
+        composeTestRule.onNodeWithTag(firstBoxTag, useUnmergedTree = true).assertIsFocused()
 
         // Attempt to type into the first box again, expecting it to accept input, implying focus has moved back
         composeTestRule.onNodeWithTag(firstBoxTag, useUnmergedTree = true).performTextInput("3")
