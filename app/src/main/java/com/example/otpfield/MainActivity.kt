@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.otpfield.ui.theme.OtpFieldTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,11 +31,13 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center
                     ) {
-                        OtpInputField(otpText)
+                        OtpInputField(
+                            otpText,
+                            otpTextType = KeyboardType.Number,
+                        )
                     }
                 }
             }
         }
     }
 }
-
